@@ -80,27 +80,45 @@ const Game = (function () {
             [0,4,8],
             [2,4,6],
         ]
-        for (let i=0;i<winningCombinations.length;i++){
-            const [a,b,c] = winningCombinations[i];
-            console.log(a,b,c);
-            if (board[a] != "" && board[a]==board[b] && board[b] == board[c]){
-                return true;
-                break;
+            for (let i=0;i<winningCombinations.length;i++){
+                const [a,b,c] = winningCombinations[i];
+                if (board[a] != "" && board[a]==board[b] && board[b] == board[c]){
+                    return true;
+                    break;
+                }
+            }
+        
+    }
+    const isNotTie = (board) =>{
+        let emptyCellsLeft = false;
+        for (let i=0;i<board.length;i++){
+            console.log(i);
+            if (board[i] == "" ){
+                emptyCellsLeft = true;
             }
         }
+        return emptyCellsLeft;
+
     }
+
     const update = () =>{
         gameOver = checkWin(board.getBoard());
         if (gameOver){
-            document.querySelector("#result-display").textContent = `${players[currentPlayerIndex].name} wins!`;
-            console.log("gameOver triggered");
-            board.render();
+                document.querySelector("#result-display").textContent = `${players[currentPlayerIndex].name} wins!`;
+                console.log("gameOver triggered");
+                board.render();
         }else{
-            if (currentPlayerIndex == 0){
-                currentPlayerIndex++;
+            if(isNotTie(board.getBoard())){
+                if (currentPlayerIndex == 0){
+                    currentPlayerIndex++;
+                }else{
+                    currentPlayerIndex--;
+                }
             }else{
-                currentPlayerIndex--;
+                document.querySelector("#result-display").textContent = `It's a tie!`;
+                board.render();
             }
+            
         }
 
     }
