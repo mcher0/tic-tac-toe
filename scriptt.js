@@ -30,8 +30,11 @@ const board = (function () {
         }
         document.querySelector('#gameboard').innerHTML = " ";
     }
+    const getBoard = () =>{
+        return board;
+    }
     
-    return  {render,modifyBoard,wipeBoard}
+    return  {render,modifyBoard,wipeBoard,getBoard}
   })();
 
 const createPlayer = (name,mark) =>{
@@ -65,15 +68,45 @@ const Game = (function () {
         Game.update();
 
     }
-    const update = () =>{
-        if (currentPlayerIndex == 0){
-            currentPlayerIndex++;
-        }else{
-            currentPlayerIndex--;
+
+    const checkWin = (board)=>{
+        const winningCombinations = [
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+            [0,4,8],
+            [2,4,6],
+        ]
+        for (let i=0;i<winningCombinations.length;i++){
+            const [a,b,c] = winningCombinations[i];
+            console.log(a,b,c);
+            if (board[a] != "" && board[a]==board[b] && board[b] == board[c]){
+                return true;
+                break;
+            }
         }
+    }
+    const update = () =>{
+        gameOver = checkWin(board.getBoard());
+        if (gameOver){
+            document.querySelector("#result-display").textContent = `${players[currentPlayerIndex].name} wins!`;
+            console.log("gameOver triggered");
+            board.render();
+        }else{
+            if (currentPlayerIndex == 0){
+                currentPlayerIndex++;
+            }else{
+                currentPlayerIndex--;
+            }
+        }
+
     }
     const restart = () =>{
         let players =[{},{}];
+        document.querySelector("#result-display").textContent = ``;
         document.querySelector("#player1").textContent = "";
         document.querySelector("#player2").textContent = "";
         currentPlayerIndex = 0;
